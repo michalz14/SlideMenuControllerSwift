@@ -903,7 +903,7 @@ open class SlideMenuController: UIViewController, UIGestureRecognizerDelegate {
     fileprivate func setOpenWindowLevel() {
         if SlideMenuOptions.hideStatusBar {
             DispatchQueue.main.async(execute: {
-                if let window = UIApplication.shared.keyWindow {
+                if let window = UIApplication.shared.mainWindow {
                     window.windowLevel = UIWindow.Level.statusBar + 1
                 }
             })
@@ -913,7 +913,7 @@ open class SlideMenuController: UIViewController, UIGestureRecognizerDelegate {
     fileprivate func setCloseWindowLevel() {
         if SlideMenuOptions.hideStatusBar {
             DispatchQueue.main.async(execute: {
-                if let window = UIApplication.shared.keyWindow {
+                if let window = UIApplication.shared.mainWindow {
                     window.windowLevel = UIWindow.Level.normal
                 }
             })
@@ -1087,4 +1087,17 @@ extension UIViewController {
             targetScrollView.panGestureRecognizer.require(toFail: recognizer)
         }
     }
+}
+
+
+extension UIApplication {
+    
+    var mainWindow: UIWindow? {
+        UIApplication.shared.connectedScenes
+                .filter({$0.activationState == .foregroundActive})
+                .compactMap({$0 as? UIWindowScene})
+                .first?.windows
+                .filter({$0.isKeyWindow}).first
+    }
+    
 }
